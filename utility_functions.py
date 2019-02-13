@@ -1,4 +1,5 @@
 """Utility functions to do...s tuff"""
+# vim: set fileencoding=utf-8 :
 
 import re
 from bs4 import BeautifulSoup

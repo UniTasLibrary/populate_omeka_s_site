@@ -1,4 +1,5 @@
 """Transform an HTML website to Omeka S."""
+# vim: set fileencoding=utf-8 :
 
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 

@@ -1,4 +1,6 @@
 """FUnctions which directly interact with omeka - ie via API."""
+# vim: set fileencoding=utf-8 :
+
 # http://docs.python-requests.org/en/master/user/quickstart/
 
 import json
