@@ -1,0 +1,14 @@
+[run]
+omit =
+  tests/*
+branch = True
+source = .
+
+[report]
+# Slowly work this up to 100%
+fail_under = 80
+# show lines of uncovered statements
+show_missing = True
+# Hide files with 100% coverage (for whatever reason they are 100%)
+skip_covered = True
+
