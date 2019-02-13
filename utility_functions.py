@@ -4,13 +4,13 @@
 import re
 from bs4 import BeautifulSoup
 import codecs
+from config import *
 
 from omeka_interactions import download_specific_media_id, upload_items_with_media
 
 # Functions
 def print_debug(debug_message):
-	# TODO: this will need to check config file once implmeneted
-	debug_setting = False
+	debug_setting = run_verbose
 	if debug_setting:
 		print debug_message
 	return True
