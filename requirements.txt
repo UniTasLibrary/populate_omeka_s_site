@@ -1,0 +1,7 @@
+BeautifulSoup4
+
+# Testing
+pytest
+pytest-cov
+mock
+
