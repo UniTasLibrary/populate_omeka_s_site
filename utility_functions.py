@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 
 import re
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 import codecs
 from config import *
 
@@ -101,19 +101,26 @@ def extract_desired_html(soup_object):
 	"""
 
 	# "Darwin style"
-	# CSS selector: a td with 'class style5' is what i need to find.
-	desired_page_contents = soup_object.find('td', class_=re.compile('style5'))
+	# desired_page_contents = soup_object.find('td', class_=re.compile('style5'))
 
-# which one did this again?
-# 	# content pages use this format
-# 	if not desired_page_contents:
-# 		# support pages (index, others???) may use this
-# 		desired_page_contents = soup_object.find_all('td', class_=re.compile('BodyHeading|BodyText|Furtherreading|TitlePageHeadings|BodyHeadings|ImageCaption'))
-# 		
-# 	if not desired_page_contents:
-# 		print "No matching classes found in {}".format(soup_object)
 
-	return desired_page_contents
+	# "Companion style"
+	# Index and some other pages won't work on this system, require looking for InstanceBeginEditable
+	# NOTE: future revision could look for <!-- InstanceBeginEditable name="content" --> and return its parent, unsure if thats an improvement or not
+
+	# Find first content block on page
+	desired_page_contents = soup_object.find('p', class_=re.compile('BodyHeading|BodyText|Furtherreading|TitlePageHeadings|BodyHeadings|ImageCaption'))
+
+	if not desired_page_contents:
+		# support pages (index, others???) may use this but the content returned is likely to be incomplete
+		desired_page_contents = soup_object.find('td', class_=re.compile('BodyHeading|BodyText|Furtherreading|TitlePageHeadings|BodyHeadings|ImageCaption'))
+
+	if not desired_page_contents:
+		print "No matching classes found in {}".format(soup_object)
+		return None
+
+	return desired_page_contents.parent
+
 
 
 def cleanup_html_markup(dirty_html):
