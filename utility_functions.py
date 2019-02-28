@@ -67,8 +67,7 @@ def load_source_html(source_location):
 		# FIXME: This does not handle unicode in the files. Fix so I
 		# have UTF-8 output after reading the file. and that files
 		# read.
-		opened_containing_file = codecs.open(source_location, mode="r",
-		encoding='UTF-8')
+		opened_containing_file = codecs.open(source_location)
 		html_doc = opened_containing_file.read()
 		soup = BeautifulSoup(html_doc, 'html.parser')        
 		# Clean up after ourselves
