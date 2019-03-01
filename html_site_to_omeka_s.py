@@ -5,6 +5,7 @@
 
 import os
 import re
+import urllib
 
 from config import *
 from utility_functions import *
@@ -58,17 +59,23 @@ for walk_root, walk_dir, walk_file in all_website_files:
 		new_map_for_image_urls = gather_previous_image_uploads()
 		# print 'new_map_for_image_urls {}'.format(new_map_for_image_urls)
 
-		all_page_images_html = page_body.find_all(href=re.compile("images"))
+		# Darwin
+		# all_page_images_html = page_body.find_all(href=re.compile("images", re.IGNORECASE))
+		# Companion
+		all_page_images_html = page_body.find_all(src=re.compile("images", re.IGNORECASE))
+		# print type(all_page_images_html)
+		print_debug('All page images {}'.format(all_page_images_html))
 
 		# Build a list of all images used on the page to try and reduce duplicate uploads
 		# If an image is used multiple times with different alt text only the first will
 		# be used.
 
 		for current_link_html in all_page_images_html:
-			full_size_image_path = current_link_html.get('href')
+			full_size_image_path = current_link_html.get('src')
 
+			# TTBOMK no page in the current site has sub images so setting to nothing
 			# Extract any sub image - those used for display
-			sub_image_html = current_link_html.find('img')
+			sub_image_html = None
 			# There isn't always an image, so check before finding image path
 			if sub_image_html:
 				small_size_image_path = sub_image_html.get('src')
@@ -85,10 +92,10 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			alt_text = generate_alt_text(sub_image_html, full_size_image_path)
 
 			# Upload full size image
-			check_for_then_upload_image(new_map_for_image_urls, full_size_image_name, full_size_image_path, alt_text, 'full')
+			check_for_then_upload_image(new_map_for_image_urls, full_size_image_name, '{}/{}'.format(walk_root, urllib.unquote(full_size_image_path)), alt_text, 'full')
 
 			# Update urls pointing to our current full image with the omeka s version
-			current_link_html['href'] = new_map_for_image_urls[full_size_image_name]
+			current_link_html['src'] = new_map_for_image_urls[full_size_image_name]
 
 			# Upload small size image
 			check_for_then_upload_image(new_map_for_image_urls, small_size_image_name, small_size_image_path, alt_text, 'small')
