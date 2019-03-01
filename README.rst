@@ -23,11 +23,20 @@ the benefits of Omeka S as we wanted.
 
 The scripts (as written) require all pages share specific attributes as thats
 what our pages have; the relevant functions could be augmented to capture
-multiple values or behave differnetly per page.
+multiple values or behave differently per page if desired.
 
 
 Configuration
 =============
+
+Site
+----
+
+A Site must be created, along with an Item Set for storing media within.
+
+
+Project
+-------
 
 Configuration is done in config.py, at a minimum the following values need to
 be set:
@@ -48,6 +57,7 @@ be set:
 
 See config.py.example for other options.
 
+
 Usage
 =====
 
@@ -57,10 +67,28 @@ it to proesss an existing site in to json then upload to Omeka S via its API.
 The current implementation uploads chunks of HTML in Omeka S blocks but can
 (and maybe one day will) be expanded to process some HTML to Omeka S blocks.
 
+Once customised, install requirements
+
+::
+	pip install -r requirements.txt
+
+then run your script
+
+::
+	python27 foo_to_omeka_s.py
+
+
 After importing be sure to check for data validity, including:
 - did you import a contents or navigation page? consider replacing it with an Omeka S generated equivalent
 - images are displaying correctly
 - pages link through to each other correctly
+
+
+Don't like your pages?
+----------------------
+
+If your pages have a systemic issue delete them with `delete_all_pages.py` and
+rerun. Items, Media and the top level Site will be unaffected.
 
 
 Known issues
@@ -69,8 +97,8 @@ Known issues
 * Error handling is sparse, and real world usage minimal.
 * If no small version of an image exists (there is no sub <img> tag) the outer image (in <a>) is not reprocessed.
 * Some details are hard coded (in scripts or config) rather than gathered from API
-* Inefficient codepaths
 * No tests for main script
+* f/foo.html linking to f/bar.html will generate a link to the slug bar, not the slug f_bar which it needs.
 
 
 Future enhancements
@@ -89,7 +117,6 @@ Most significant are:
 * Actually, fix all instances of HTML shoved in an HTMLblock rather than using a proper Omeka S block
 * Improved processing necessity checks
 * json is currently text substituted in to templates, should be python objects
-* API calls to download images and pages should not be run for every page
 
 Other possible enhancements include:
 
