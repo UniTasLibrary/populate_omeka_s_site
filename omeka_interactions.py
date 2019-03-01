@@ -81,7 +81,7 @@ def upload_items_with_media(image_name, image_data):
 	# Three tuple, filename, file object, extra headers
 	files = [
 		('data', (None, json.dumps(json_data), 'application/json')),
-		('file[0]', (image_name, open('{}{}'.format(website_root_on_disk, image_data['image_with_path']), 'rb'), 'application/octet-stream'))
+		('file[0]', (image_name, open(image_data['image_with_path'], 'rb'), 'application/octet-stream'))
 	]
 
 	# print files
