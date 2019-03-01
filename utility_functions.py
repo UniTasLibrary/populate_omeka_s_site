@@ -25,9 +25,15 @@ def rewrite_slug(old_url):
 	results so is suitable for dynamic rewrites.
 	"""
 	# Cut of leading ../ and trailing .html
-	trimmed_url = old_url.strip('../').split('.html')[0]
-	# Lowercase and sub / and . as required
-	lowered_url =  trimmed_url.lower().replace('/', '_').replace('.', '_')
+	if old_url.endswith('.html'):
+		trimmed_url = old_url.strip('../').split('.html')[0]
+	elif old_url.endswith('.htm'):
+		trimmed_url = old_url.strip('../').split('.htm')[0]
+	else:
+		trimmed_url = old_url
+
+	# Lowercase and replace '/', ' ', and '.' as required
+	lowered_url = trimmed_url.lower().replace('/', '_').replace('.', '_').replace(' ', '_').replace('%20', '_')
 	# Only keep ASCII characters
 	stripped_url = re.sub(r'\W+', '', lowered_url)
 	return stripped_url
