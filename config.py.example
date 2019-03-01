@@ -1,22 +1,20 @@
 """Configuration for pre canned code"""
 # vim: set fileencoding=utf-8 :
 
-# Private
+# Trailling / is required
 website_root_on_disk = '/Users/me/Documents/exhibitions/'
 
 omekas_base_url = 'https://example.org/'
 omekas_site_id = 16
 omekas_item_set_id = 929 # Could be derived via API call
 
-# Psudorandom strings, generate via admin > user > Api keys
+# Generate via admin > user > Api keys
 credential_params = {
     "key_identity": "ident",
     "key_credential": "cred"
 }
 
 run_verbose = False
-
-# Dynamic
 
 api_url_items = '{}api/items'.format(omekas_base_url)
 api_url_media = '{}api/media'.format(omekas_base_url)
