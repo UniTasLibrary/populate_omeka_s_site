@@ -97,6 +97,10 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			if small_size_image_name:
 				# Update urls pointing to our current small image with the omeka s version
 				sub_image_html['src'] = new_map_for_image_urls[small_size_image_name]
+				if small_size_image_name not in new_map_for_image_urls.keys():
+					# Now extract alt text, if possible. If not create some from small_size_image_name
+					if not alt_text:
+						alt_text = generate_alt_text(sub_image_html, small_size_image_name)
 
 		print '\nChecking for existing {} page\n'.format(rewrite_slug(current_file).capitalize())
 

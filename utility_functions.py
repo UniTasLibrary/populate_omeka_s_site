@@ -176,13 +176,13 @@ def extract_image_name(image_path):
 			print 'File has probably been imported to omeka already, skipping'
 		return ''
 
-def generate_alt_text(image_html, full_size_image_name):
+def generate_alt_text(image_html, image_name):
 	# image_html is actually a BS object
 	try:
 		alt_text = image_html.get('alt')
 	except AttributeError as aee:
-		print '{} has no alt text, Attempting to create a suitable string using file name'.format(full_size_image_name)
-		alt_text = full_size_image_name.replace('_', ' ').replace('.', ' ')
+		print '{} has no alt text, Attempting to create a suitable string using file name'.format(image_name)
+		alt_text = image_name.replace('/', ' ').replace('.', ' ').replace('_', ' ').replace('%20', ' ')
 	return alt_text
 
 def check_for_then_upload_image(image_urls, image_name, image_path, alt_text, version):
