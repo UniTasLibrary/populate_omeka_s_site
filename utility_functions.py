@@ -139,7 +139,7 @@ def cleanup_html_markup(dirty_html):
 	from bs4 import Comment
 	comments=dirty_html.find_all(string=lambda text:isinstance(text,Comment))
 	for c in comments:
-		# print 'Deleting {}'.format(c)
+		print_debug( 'Deleting {}'.format(c))
 		c.extract()
 
 	# print dirty_html

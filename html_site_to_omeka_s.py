@@ -20,9 +20,9 @@ all_website_files = os.walk(website_root_on_disk)
 for walk_root, walk_dir, walk_file in all_website_files:
 	if '_notes' in walk_dir:
 		walk_dir.remove('_notes')  # don't visit DreamWeaver directories
-	# print walk_root
-	# print walk_dir
-	# print walk_file
+	print_debug( walk_root )
+	print_debug( walk_dir )
+	print_debug( walk_file )
 	# Look at files in current directory
 	for current_file in walk_file:
 		# Buid path to our current file
@@ -54,10 +54,13 @@ for walk_root, walk_dir, walk_file in all_website_files:
  			print 'Skipping {}, no HTML extracted from page body'.format(current_file)
  			continue
 
-		print '\nProcessing images\n'
+
+		# print_debug(page_body)
+
+		print_debug('\nProcessing images\n')
 
 		new_map_for_image_urls = gather_previous_image_uploads()
-		# print 'new_map_for_image_urls {}'.format(new_map_for_image_urls)
+		print_debug('new_map_for_image_urls {}'.format(new_map_for_image_urls))
 
 		# Darwin
 		# all_page_images_html = page_body.find_all(href=re.compile("images", re.IGNORECASE))
@@ -109,7 +112,7 @@ for walk_root, walk_dir, walk_file in all_website_files:
 					if not alt_text:
 						alt_text = generate_alt_text(sub_image_html, small_size_image_name)
 
-		print '\nChecking for existing {} page\n'.format(rewrite_slug(current_file).capitalize())
+		print_debug('\nChecking for existing {} page\n'.format(file_slug.capitalize()))
 
 		our_sites_metadata = download_site_metadata()
 
