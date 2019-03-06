@@ -18,6 +18,7 @@ from omeka_interactions import *
 all_website_files = os.walk(website_root_on_disk)
 
 for walk_root, walk_dir, walk_file in all_website_files:
+	print '\n------------ Next folder -------------\n'
 	if '_notes' in walk_dir:
 		walk_dir.remove('_notes')  # don't visit DreamWeaver directories
 	print_debug( walk_root )
