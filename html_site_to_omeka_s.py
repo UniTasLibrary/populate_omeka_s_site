@@ -114,12 +114,16 @@ for walk_root, walk_dir, walk_file in all_website_files:
 		our_sites_metadata = download_site_metadata()
 
 		all_current_page_slugs = []
-		for site_page in our_sites_metadata['o:page']:
-			# print site_page
-			our_pages_metadata = download_specific_page_metadata(site_page['o:id'])
-			all_current_page_slugs.append(our_pages_metadata['o:slug'])
+		if 'o:page' in our_sites_metadata.keys():
+			for site_page in our_sites_metadata['o:page']:
+				# print site_page
+				our_pages_metadata = download_specific_page_metadata(site_page['o:id'])
+				if our_pages_metadata:
+					all_current_page_slugs.append(our_pages_metadata['o:slug'])
 
-		print all_current_page_slugs
+			print all_current_page_slugs
+		else:
+			print "our_sites_metadata did not include o:page"
 
 		# print all_current_page_slugs
 		# print rewrite_slug(current_file)

@@ -51,14 +51,32 @@ def download_all_omekas_media():
 
 
 def download_specific_media_id(media_id):
-	return requests.get('{}/{}'.format(api_url_media, media_id), params=credential_params).json()
+	try:
+		request_result = requests.get('{}/{}'.format(api_url_media, media_id), params=credential_params).json()
+	except ValueError as vee:
+		print '{} when processing media id {}'.format(vee, media_id)
+		print request_result
+		request_result = {}
+	return request_result
 
 
 def download_site_metadata():
-	return requests.get('{}/{}'.format(api_url_sites,omekas_site_id), params=credential_params).json()
+	try:
+		request_result = requests.get('{}/{}'.format(api_url_sites, omekas_site_id), params=credential_params).json()
+	except ValueError as vee:
+		print '{} when processing site id {}'.format(vee, omekas_site_id)
+		print request_result
+		request_result = {}
+	return request_result
 
 def download_specific_page_metadata(page_id):
-	return requests.get('{}/{}'.format(api_url_site_pages, page_id), params=credential_params).json()
+	try:
+		request_result = requests.get('{}/{}'.format(api_url_site_pages, page_id), params=credential_params).json()
+	except ValueError as vee:
+		print '{} when processing page id {}'.format(vee, page_id)
+		print request_result
+		request_result = {}
+	return request_result
 
 
 # Call this to upload images as they are found in the html.

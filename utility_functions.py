@@ -192,7 +192,11 @@ def check_for_then_upload_image(image_urls, image_name, image_path, alt_text, ve
 		uploaded_image = upload_items_with_media(image_name, { 'alt_text': alt_text, 'version': version, 'image_with_path': image_path})
 		full_media_entry = download_specific_media_id(uploaded_image.json()['o:media'][0]['o:id'])
 
-		image_urls.update({image_name: '/{}'.format(full_media_entry['o:original_url'].strip(omekas_base_url))})
+		if 'o:original_url' in full_media_entry:
+			image_urls.update({image_name: '/{}'.format(full_media_entry['o:original_url'].strip(omekas_base_url))})
+		else:
+			print "Something went wrong with the API returned json for {}; it is lacking o:original_url".format(image_name)
+			print full_media_entry
 		return True
 	else:
 		print '{} has been seen before in this item set and will not be uploaded again.'.format(image_name)
