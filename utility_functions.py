@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup, Comment
 import codecs
 from config import *
+from datetime import datetime
 
 from omeka_interactions import download_specific_media_id, upload_items_with_media, download_site_metadata
 from omeka_interactions import download_specific_page_metadata
@@ -13,7 +14,7 @@ from omeka_interactions import download_specific_page_metadata
 def print_debug(debug_message):
 	debug_setting = run_verbose
 	if debug_setting:
-		print debug_message
+		print '{}: {}'.format(datetime.now(), debug_message)
 	return True
 
 # https://stackoverflow.com/questions/1276764/stripping-everything-but-alphanumeric-chars-from-a-string-in-python
