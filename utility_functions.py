@@ -169,7 +169,7 @@ def extract_image_name(image_path):
 	if not image_path:
 		return ''
 	try:
-		image_name = image_path.split('images/')[1]
+		image_name = image_path.split('/')[-1]
 		return image_name
 	except IndexError as iee:
 		print 'Unable to split {} to create a suitable image name'.format(image_path)
