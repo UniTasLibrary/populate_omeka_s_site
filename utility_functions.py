@@ -52,7 +52,7 @@ def check_if_processing_required(source_location):
 	# We only need to process HTML - pictures, binaries, etc will not be embeded like this.
 
 	if source_location.endswith('.jpg') or source_location.endswith('jpeg') or source_location.endswith('gif'):
-		# Silently skip images, there are many more than html
+		print_debug('No further processing required for {}'.format(source_location))
 		return False
 
 	if not (source_location.endswith('.htm') or source_location.endswith('html')):
@@ -205,26 +205,22 @@ def check_for_then_upload_image(image_urls, image_name, image_path, alt_text, ve
 
 
 def replace_known_page_slugs_list(page_ids_and_slugs):
+	if not page_ids_and_slugs:
+		print_debug('Updating empty starting page data from API')
 	# Need to download metadata each time as page list changes
 	our_sites_metadata = download_site_metadata()
 	if 'o:page' in our_sites_metadata.keys():
 		for site_page in our_sites_metadata['o:page']:
 			# print_debug(site_page)
+			# Do not query API for pages we already have. This will cut API call volume
+			# Linearly to the number of pages.
 			if site_page['o:id'] in page_ids_and_slugs.keys():
-				# Do not query API for pages we already have. This will cut API call volume
-				# Linearly to the number of pages.
-				print_debug("skipping {} as it is in our page_ids_and_slugs already".format(site_page['o:id']))
 				continue
 			# First run has no data so we probably don't need to know it can't find all these things
-			if page_ids_and_slugs:
-				print_debug('Current pages o:id {} not found in our sites o:page entry. Currently known page IDs are {}'.format(site_page['o:id'], page_ids_and_slugs.keys()))
-			else:
-				print_debug('Updating empty starting page data from API')
 			our_pages_metadata = download_specific_page_metadata(site_page['o:id'])
 			if our_pages_metadata:
 				page_ids_and_slugs.update({site_page['o:id']: our_pages_metadata['o:slug']})
 
-		print_debug(page_ids_and_slugs)
 	else:
 		print "our_sites_metadata did not include o:page"
 

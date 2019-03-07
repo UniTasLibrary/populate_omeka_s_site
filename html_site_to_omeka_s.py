@@ -18,8 +18,9 @@ from omeka_interactions import *
 all_website_files = os.walk(website_root_on_disk)
 
 # Download any existing pages before running script; start with empty dict
-print_debug('If resuming an existing upload there will probably be messages about pages not found in our empty starting data')
+# print_debug('If resuming an existing upload there will probably be messages about pages not found in our empty starting data')
 all_current_page_slugs = replace_known_page_slugs_list({})
+all_current_page_slugs_length = len(all_current_page_slugs)
 
 # Download any existing image URLS before running
 new_map_for_image_urls = gather_previous_image_uploads()
@@ -39,7 +40,6 @@ for walk_root, walk_dir, walk_file in all_website_files:
 
 		# This skip is silent, check_if_processing_required outputs notices
 		if not check_if_processing_required(markup_file):
-			print_debug('No further processing required')
 			continue
 		# Needs to be below the html skip-check in check_if_processing_required
 		print '\n===========\n'
@@ -143,6 +143,9 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			# Arguably this is happening too early, but thats how it is atm. (A failure lower down will result in a missing page)
 			print_debug("Updating all_current_page_slugs from API.")
 			all_current_page_slugs = replace_known_page_slugs_list(all_current_page_slugs)
+			if all_current_page_slugs_length != len(all_current_page_slugs):
+				all_current_page_slugs_length = len(all_current_page_slugs)
+				print_debug(all_current_page_slugs)
 
 		# If we didn't continue (skip) above, perform processing of page.
 		print '\nPreocessing HTML\n'
