@@ -17,6 +17,10 @@ from omeka_interactions import *
 # FIXME: need to add error handling; currently walk errors are ignored
 all_website_files = os.walk(website_root_on_disk)
 
+# Download any existing pages before running script; start with empty dict
+print_debug('If resuming an existing upload there will probably be messages about pages not found in our empty starting data')
+all_current_page_slugs = replace_known_page_slugs_list({})
+
 for walk_root, walk_dir, walk_file in all_website_files:
 	print '\n------------ Next folder -------------\n'
 	if '_notes' in walk_dir:
@@ -115,26 +119,16 @@ for walk_root, walk_dir, walk_file in all_website_files:
 
 		print_debug('\nChecking for existing {} page\n'.format(file_slug.capitalize()))
 
-		our_sites_metadata = download_site_metadata()
-
-		all_current_page_slugs = []
-		if 'o:page' in our_sites_metadata.keys():
-			for site_page in our_sites_metadata['o:page']:
-				# print site_page
-				our_pages_metadata = download_specific_page_metadata(site_page['o:id'])
-				if our_pages_metadata:
-					all_current_page_slugs.append(our_pages_metadata['o:slug'])
-
-			print all_current_page_slugs
-		else:
-			print "our_sites_metadata did not include o:page"
-
-		# print all_current_page_slugs
-		# print rewrite_slug(current_file)
-		if rewrite_slug(current_file) in all_current_page_slugs:
+		# print_debug(rewrite_slug(current_file))
+		if rewrite_slug(current_file) in all_current_page_slugs.values():
 			print "{} already exists remotely; skipping page processing and creation".format(rewrite_slug(current_file).capitalize())
 			continue
+		else:
+			# Arguably this is happening too early, but thats how it is atm. (A failure lower down will result in a missing page)
+			print_debug("Updating all_current_page_slugs from API.")
+			all_current_page_slugs = replace_known_page_slugs_list(all_current_page_slugs)
 
+		# If we didn't continue (skip) above, perform processing of page.
 		print '\nPreocessing HTML\n'
 
 		cleanup_html_markup(page_body)

@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup, Comment
 import codecs
 from config import *
 
-from omeka_interactions import download_specific_media_id, upload_items_with_media
+from omeka_interactions import download_specific_media_id, upload_items_with_media, download_site_metadata
+from omeka_interactions import download_specific_page_metadata
 
 # Functions
 def print_debug(debug_message):
@@ -201,4 +202,30 @@ def check_for_then_upload_image(image_urls, image_name, image_path, alt_text, ve
 	else:
 		print '{} has been seen before in this item set and will not be uploaded again.'.format(image_name)
 		return None
+
+
+def replace_known_page_slugs_list(page_ids_and_slugs):
+	# Need to download metadata each time as page list changes
+	our_sites_metadata = download_site_metadata()
+	if 'o:page' in our_sites_metadata.keys():
+		for site_page in our_sites_metadata['o:page']:
+			# print_debug(site_page)
+			if site_page['o:id'] in page_ids_and_slugs.keys():
+				# Do not query API for pages we already have. This will cut API call volume
+				# Linearly to the number of pages.
+				pass
+			# First run has no data so we probably don't need to know it can't find all these things
+			if page_ids_and_slugs:
+				print_debug('Current pages o:id not found in our sites o:page entry. Page is {}'.format(site_page))
+			else:
+				print_debug('Updating empty starting page data from API')
+			our_pages_metadata = download_specific_page_metadata(site_page['o:id'])
+			if our_pages_metadata:
+				page_ids_and_slugs.update({site_page['o:id']: our_pages_metadata['o:slug']})
+
+		print_debug(page_ids_and_slugs)
+	else:
+		print "our_sites_metadata did not include o:page"
+
+	return page_ids_and_slugs
 
