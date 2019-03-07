@@ -7,10 +7,13 @@ import os
 import re
 import urllib
 
+from datetime import datetime
+
 from config import *
 from utility_functions import *
 from omeka_interactions import *
 
+start_time = datetime.now()
 
 # TODO: A __main__ function would look really good here.
 
@@ -168,5 +171,8 @@ for walk_root, walk_dir, walk_file in all_website_files:
 
 
 	print ''
+
+print 'Run started at {}'.format(start_time)
+print 'Run finished at {}'.format(datetime.now())
 
 
