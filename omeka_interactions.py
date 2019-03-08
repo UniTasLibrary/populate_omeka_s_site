@@ -113,7 +113,7 @@ def upload_items_with_media(image_name, image_data):
 	# Always return, even when its an error within
 	return r
 
-def upload_new_page(data_block_list, new_slug):
+def upload_new_page(data_block_list, new_slug, new_title):
 	# Our upload data - inserts the data_block_list directly in to the json
 	json.dumps(data_block_list)
 	json_data = {
@@ -122,7 +122,7 @@ def upload_new_page(data_block_list, new_slug):
 			"@id" : "{}/sites/{}".format(api_url_sites, omekas_site_id),
 			"o:id": '{}'.format(omekas_site_id)
 			},
-		"o:title": "{}".format(new_slug.capitalize()),
+		"o:title": "{}".format(new_title.capitalize()),
 		"o:block": data_block_list,
 	}
 

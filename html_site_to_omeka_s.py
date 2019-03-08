@@ -41,6 +41,15 @@ for walk_root, walk_dir, walk_file in all_website_files:
 		# Buid path to our current file
 		markup_file = os.path.join(walk_root, current_file)
 
+	# FIXME: I still don't think this will work. I suspect if its a 3rd level page
+	# (eg /history/something/foo.htm) the auto slug will be something_foo not
+	# history_something_foo
+
+		# Links are relative to website root, this assembles what will
+		# be the path for the slug so it matches internal links
+		full_file_slug = rewrite_slug('{}/{}'.format(walk_root.split(website_root_on_disk)[1], current_file))
+		short_file_slug = rewrite_slug(current_file)
+
 		# This skip is silent, check_if_processing_required outputs notices
 		if not check_if_processing_required(markup_file):
 			continue
@@ -136,11 +145,11 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			else:
 				print 'Image name ({}) was an empty string; upload skipped'.format(small_size_image_name)
 
-		print_debug('\nChecking for existing {} page\n'.format(file_slug.capitalize()))
+		print_debug('\nChecking for existing {} page\n'.format(short_file_slug.capitalize()))
 
 		# print_debug(rewrite_slug(current_file))
-		if rewrite_slug(current_file) in all_current_page_slugs.values():
-			print "{} already exists remotely; skipping page processing and creation".format(rewrite_slug(current_file).capitalize())
+		if full_file_slug in all_current_page_slugs.values():
+			print "{} already exists remotely; skipping page processing and creation".format(full_file_slug)
 			continue
 		else:
 			# Arguably this is happening too early, but thats how it is atm. (A failure lower down will result in a missing page)
@@ -167,7 +176,7 @@ for walk_root, walk_dir, walk_file in all_website_files:
 		for block_content in page_body:
 			processed_block = build_page_block_data(block_content)
 			page_content_blocks.append(processed_block)
-		upload_new_page(page_content_blocks, rewrite_slug(current_file))
+		upload_new_page(page_content_blocks, full_file_slug, short_file_slug)
 
 
 	print ''
