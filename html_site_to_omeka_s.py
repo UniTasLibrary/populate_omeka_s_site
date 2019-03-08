@@ -98,7 +98,7 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			if full_size_image_name != '':
 				if full_size_image_name not in new_map_for_image_urls.keys():
 					# Now extract alt text, if possible. If not create some from full_size_image_name
-					alt_text = generate_alt_text(sub_image_html, full_size_image_path)
+					alt_text = generate_alt_text(sub_image_html, full_size_image_name)
 
 					# Upload full size image. If it fails (None returned) print out the list of image urls
 					check_for_then_upload_image(new_map_for_image_urls, full_size_image_name, '{}/{}'.format(walk_root, urllib.unquote(full_size_image_path)), alt_text, 'full')
@@ -118,6 +118,10 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			# Only process small size image if it isn't already uploaded
 			if small_size_image_name != '':
 				if small_size_image_name not in new_map_for_image_urls.keys():
+					# Now extract alt text, if possible. If not create some from small_size_image_name
+					if not alt_text:
+						alt_text = generate_alt_text(sub_image_html, small_size_image_name)
+
 					# Upload small size image. If it fails (None returned) print out the list of image urls
 					check_for_then_upload_image(new_map_for_image_urls, small_size_image_name, small_size_image_path, alt_text, 'small')
 
