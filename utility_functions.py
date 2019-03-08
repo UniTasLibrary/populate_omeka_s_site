@@ -213,10 +213,11 @@ def replace_known_page_slugs_list(page_ids_and_slugs):
 			if site_page['o:id'] in page_ids_and_slugs.keys():
 				# Do not query API for pages we already have. This will cut API call volume
 				# Linearly to the number of pages.
-				pass
+				print_debug("skipping {} as it is in our page_ids_and_slugs already".format(site_page['o:id']))
+				continue
 			# First run has no data so we probably don't need to know it can't find all these things
 			if page_ids_and_slugs:
-				print_debug('Current pages o:id not found in our sites o:page entry. Page is {}'.format(site_page))
+				print_debug('Current pages o:id {} not found in our sites o:page entry. Currently known page IDs are {}'.format(site_page['o:id'], page_ids_and_slugs.keys()))
 			else:
 				print_debug('Updating empty starting page data from API')
 			our_pages_metadata = download_specific_page_metadata(site_page['o:id'])

@@ -21,6 +21,10 @@ all_website_files = os.walk(website_root_on_disk)
 print_debug('If resuming an existing upload there will probably be messages about pages not found in our empty starting data')
 all_current_page_slugs = replace_known_page_slugs_list({})
 
+# Download any existing image URLS before running
+new_map_for_image_urls = gather_previous_image_uploads()
+print_debug('new_map_for_image_urls {}'.format(new_map_for_image_urls))
+
 for walk_root, walk_dir, walk_file in all_website_files:
 	print '\n------------ Next folder -------------\n'
 	if '_notes' in walk_dir:
@@ -64,9 +68,6 @@ for walk_root, walk_dir, walk_file in all_website_files:
 
 		print_debug('\nProcessing images\n')
 
-		new_map_for_image_urls = gather_previous_image_uploads()
-		print_debug('new_map_for_image_urls {}'.format(new_map_for_image_urls))
-
 		# Darwin
 		# all_page_images_html = page_body.find_all(href=re.compile("images", re.IGNORECASE))
 		# Companion
@@ -91,31 +92,42 @@ for walk_root, walk_dir, walk_file in all_website_files:
 				print('{} has no sub image tag to render'.format(current_link_html))
 				small_size_image_path = ''	# Kill previous iteration if set above
 
-			# print '0 big image {}, small image {}'.format(full_size_image_path, small_size_image_path)
-
+			# Build full_size_image_name
 			full_size_image_name = extract_image_name(full_size_image_path)
+			# Only process full size image if it isn't already uploaded
+			if full_size_image_name != '':
+				if full_size_image_name not in new_map_for_image_urls.keys():
+					# Now extract alt text, if possible. If not create some from full_size_image_name
+					alt_text = generate_alt_text(sub_image_html, full_size_image_path)
+
+					# Upload full size image. If it fails (None returned) print out the list of image urls
+					check_for_then_upload_image(new_map_for_image_urls, full_size_image_name, '{}/{}'.format(walk_root, urllib.unquote(full_size_image_path)), alt_text, 'full')
+
+					new_map_for_image_urls = gather_previous_image_uploads()
+					print_debug('new_map_for_image_urls has been updated: {}'.format(new_map_for_image_urls))
+
+				# Update urls pointing to our current full image with the omeka s version
+				current_link_html['src'] = new_map_for_image_urls[full_size_image_name]
+			else:
+				print 'Image name ({}) was an empty string; upload and HTML updates skipped'.format(full_size_image_name)
+
+
+			# Build small_size_image_name
 			small_size_image_name = extract_image_name(small_size_image_path)
 
-			# Now extract alt text, if possible. If not create some from full_size_image_name
-			alt_text = generate_alt_text(sub_image_html, full_size_image_path)
+			# Only process small size image if it isn't already uploaded
+			if small_size_image_name != '':
+				if small_size_image_name not in new_map_for_image_urls.keys():
+					# Upload small size image. If it fails (None returned) print out the list of image urls
+					check_for_then_upload_image(new_map_for_image_urls, small_size_image_name, small_size_image_path, alt_text, 'small')
 
-			# Upload full size image
-			check_for_then_upload_image(new_map_for_image_urls, full_size_image_name, '{}/{}'.format(walk_root, urllib.unquote(full_size_image_path)), alt_text, 'full')
+					new_map_for_image_urls = gather_previous_image_uploads()
+					print_debug('new_map_for_image_urls has been updated: {}'.format(new_map_for_image_urls))
 
-			# Update urls pointing to our current full image with the omeka s version
-			current_link_html['src'] = new_map_for_image_urls[full_size_image_name]
-
-			# Upload small size image
-			check_for_then_upload_image(new_map_for_image_urls, small_size_image_name, small_size_image_path, alt_text, 'small')
-
-			# sub_image_html may not exist, but must do if small_size_image_name is defined.
-			if small_size_image_name:
 				# Update urls pointing to our current small image with the omeka s version
 				sub_image_html['src'] = new_map_for_image_urls[small_size_image_name]
-				if small_size_image_name not in new_map_for_image_urls.keys():
-					# Now extract alt text, if possible. If not create some from small_size_image_name
-					if not alt_text:
-						alt_text = generate_alt_text(sub_image_html, small_size_image_name)
+			else:
+				print 'Image name ({}) was an empty string; upload skipped'.format(small_size_image_name)
 
 		print_debug('\nChecking for existing {} page\n'.format(file_slug.capitalize()))
 
