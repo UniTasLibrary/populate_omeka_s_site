@@ -149,3 +149,15 @@ def gather_previous_image_uploads():
 	return downloaded_image_urls
 
 
+# Danger will robinson!
+def delete_remote_item(resource_type, resource_id):
+	# Accepts:
+	# resource_type - as specified on https://omeka.org/s/docs/developer/key_concepts/api/
+	# resource_id - the identifer (typically number) of the resource to act on.
+
+	deletion = requests.delete('{}api/{}/{}'.format(omekas_base_url, resource_type, resource_id), params=credential_params)
+	if not deletion.ok:
+		print deletion.text
+		return False
+	return True
+
