@@ -57,7 +57,7 @@ for walk_root, walk_dir, walk_file in all_website_files:
 		print '\n===========\n'
 
 		# Remove later when listing every file not needed
-		print "Current file is {}".format(current_file)
+		print "Current file is {}, slug is {}".format(current_file, full_file_slug)
 
 		# Take the reference to the file on disk and actually open it up
 		html_soup = load_source_html(markup_file)
@@ -101,7 +101,7 @@ for walk_root, walk_dir, walk_file in all_website_files:
 			if sub_image_html:
 				small_size_image_path = sub_image_html.get('src')
 			else:
-				print('{} has no sub image tag to render'.format(current_link_html))
+				print('No sub image tag to render in {}'.format(current_link_html))
 				small_size_image_path = ''	# Kill previous iteration if set above
 
 			# Build full_size_image_name
