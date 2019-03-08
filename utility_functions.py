@@ -141,6 +141,10 @@ def cleanup_html_markup(dirty_html):
 		if not e.get('href').startswith('http'):
 			e['href'] = rewrite_slug(e.get('href'))
 			# print 'keeping {}'.format(e)
+	for e in dirty_html.find_all(href=re.compile('htm')):
+		if not e.get('href').startswith('http'):
+			e['href'] = rewrite_slug(e.get('href'))
+			# print 'keeping {}'.format(e)
 
 
 def build_page_block_data(page_section):
