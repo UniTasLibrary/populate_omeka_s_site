@@ -9,15 +9,16 @@ import urllib
 
 from datetime import datetime
 
-from config import *
+import omeka_interactions
+import config
+# Most utility functions are imported
 from utility_functions import *
-from omeka_interactions import *
 
 start_time = datetime.now()
 
 def main_site_migration():
 	# FIXME: need to add error handling; currently walk errors are ignored
-	all_website_files = os.walk(website_root_on_disk)
+	all_website_files = os.walk(config.website_root_on_disk)
 
 	# Download any existing pages before running script; start with empty dict
 	# print_debug('If resuming an existing upload there will probably be messages about pages not found in our empty starting data')
@@ -25,7 +26,7 @@ def main_site_migration():
 	all_current_page_slugs_length = len(all_current_page_slugs)
 
 	# Download any existing image URLS before running
-	new_map_for_image_urls = gather_previous_image_uploads()
+	new_map_for_image_urls = omeka_interactions.gather_previous_image_uploads()
 	print_debug('new_map_for_image_urls {}'.format(new_map_for_image_urls))
 
 	for walk_root, walk_dir, walk_file in all_website_files:
@@ -46,7 +47,7 @@ def main_site_migration():
 
 			# Links are relative to website root, this assembles what will
 			# be the path for the slug so it matches internal links
-			full_file_slug = rewrite_slug('{}/{}'.format(walk_root.split(website_root_on_disk)[1], current_file))
+			full_file_slug = rewrite_slug('{}/{}'.format(walk_root.split(config.website_root_on_disk)[1], current_file))
 			short_file_slug = rewrite_slug(current_file)
 
 			# This skip is silent, check_if_processing_required outputs notices
@@ -175,7 +176,7 @@ def main_site_migration():
 			for block_content in page_body:
 				processed_block = build_page_block_data(block_content)
 				page_content_blocks.append(processed_block)
-			upload_new_page(page_content_blocks, full_file_slug, short_file_slug)
+			omeka_interactions.upload_new_page(page_content_blocks, full_file_slug, short_file_slug)
 
 
 		print ''
