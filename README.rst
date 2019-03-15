@@ -91,6 +91,13 @@ If your pages have a systemic issue delete them with `delete_all_pages.py` and
 rerun. Items, Media and the top level Site will be unaffected.
 
 
+Running tests
+-------------
+
+::
+	pytest --cov
+
+
 Known issues
 ============
 
