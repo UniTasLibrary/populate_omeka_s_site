@@ -70,11 +70,13 @@ The current implementation uploads chunks of HTML in Omeka S blocks but can
 Once customised, install requirements
 
 ::
+
 	pip install -r requirements.txt
 
 then run your script
 
 ::
+
 	python27 foo_to_omeka_s.py
 
 
@@ -95,6 +97,7 @@ Running tests
 -------------
 
 ::
+
 	pytest --cov
 
 
